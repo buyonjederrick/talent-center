@@ -1,6 +1,4 @@
-'use client'
-
-import { GetServerSideProps } from 'next';
+import { useEffect, useState } from 'react';
 import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";
 import EmptyState from "@/app/components/EmptyState";
@@ -8,13 +6,24 @@ import EmptyState from "@/app/components/EmptyState";
 import getListings, { IListingsParams } from "@/app/actions/getListings";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import ClientOnly from "./components/ClientOnly";
+import { safeListing, SafeUser } from './types'; // import your types
 
-interface HomeProps {
-  listings: any[],
-  currentUser: any
-};
+const Home = () => {
+  const [listings, setListings] = useState<safeListing[]>([]);
+  const [currentUser, setCurrentUser] = useState<SafeUser | null>(null);
+  const [searchParams, setSearchParams] = useState<IListingsParams>({});
 
-const Home = ({ listings, currentUser }: HomeProps) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const listingsData = await getListings(searchParams);
+      const currentUserData = await getCurrentUser();
+      setListings(listingsData);
+      setCurrentUser(currentUserData);
+    };
+
+    fetchData();
+  }, [searchParams]);
+
   if (listings.length === 0) {
     return (
       <ClientOnly>
@@ -39,8 +48,7 @@ const Home = ({ listings, currentUser }: HomeProps) => {
             gap-8
           "
         >
-          <div></div>
-          {listings.map((listing: any) => (
+          {listings.map((listing: safeListing) => (
             <ListingCard
               currentUser={currentUser}
               key={listing.id}
@@ -50,19 +58,6 @@ const Home = ({ listings, currentUser }: HomeProps) => {
       </Container>
     </ClientOnly>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const searchParams: IListingsParams = context.query;
-  const listings = await getListings(searchParams);
-  const currentUser = await getCurrentUser();
-
-  return {
-    props: {
-      listings,
-      currentUser
-    }
-  }
 }
 
 export default Home;

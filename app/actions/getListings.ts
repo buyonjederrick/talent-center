@@ -71,12 +71,12 @@ export default async function getListings(params: IListingsParams) {
 
     const safeListings = listings.map((listing) => ({
       ...listing,
-      createdAt: listing.createdAt.toISOString(),
+      createdAt: listing?.createdAt?.toISOString(),
       user: {
-        ...listing.user,
-        createdAt: listing.user.createdAt.toISOString(),
-        updatedAt: listing.user.updatedAt.toISOString(),
-        emailVerified: listing.user.emailVerified?.toDateString() || null,
+        ...listing?.user,
+        createdAt: listing?.user?.createdAt?.toISOString(),
+        updatedAt: listing?.user?.updatedAt?.toISOString(),
+        emailVerified: listing?.user?.emailVerified?.toDateString() || null,
       },
     }));
 

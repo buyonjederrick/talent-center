@@ -1,40 +1,20 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from 'react';
+import { GetServerSideProps } from 'next';
 import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";
 import EmptyState from "@/app/components/EmptyState";
 
-import getListings, { 
-  IListingsParams
-} from "@/app/actions/getListings";
+import getListings, { IListingsParams } from "@/app/actions/getListings";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import ClientOnly from "./components/ClientOnly";
 
 interface HomeProps {
-  searchParams: IListingsParams
+  listings: any[],
+  currentUser: any
 };
 
-// Define the type of your listings and user data
-type Listing = any; // replace with your actual type
-type User = any; // replace with your actual type
-
-const Home = ({ searchParams }: HomeProps) => {
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const listingsData = await getListings(searchParams);
-      const currentUserData = await getCurrentUser();
-
-      setListings(listingsData);
-      setCurrentUser(currentUserData);
-    };
-
-    fetchData();
-  }, [searchParams]);
-
+const Home = ({ listings, currentUser }: HomeProps) => {
   if (listings.length === 0) {
     return (
       <ClientOnly>
@@ -59,7 +39,7 @@ const Home = ({ searchParams }: HomeProps) => {
             gap-8
           "
         >
-          {listings.map((listing: Listing) => (
+          {listings.map((listing: any) => (
             <ListingCard
               currentUser={currentUser}
               key={listing.id}
@@ -69,6 +49,19 @@ const Home = ({ searchParams }: HomeProps) => {
       </Container>
     </ClientOnly>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const searchParams: IListingsParams = context.query;
+  const listings = await getListings(searchParams);
+  const currentUser = await getCurrentUser();
+
+  return {
+    props: {
+      listings,
+      currentUser
+    }
+  }
 }
 
 export default Home;

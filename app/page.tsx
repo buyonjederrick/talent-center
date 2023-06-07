@@ -9,13 +9,11 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import ClientOnly from "./components/ClientOnly";
 
 interface HomeProps {
-  searchParams: IListingsParams
+  listings: any[],
+  currentUser: any
 };
 
-const Home = async ({ searchParams }: HomeProps) => {
-  const listings = await getListings(searchParams);
-  const currentUser = await getCurrentUser();
-
+const Home = ({ listings, currentUser }: HomeProps) => {
   if (listings.length === 0) {
     return (
       <ClientOnly>
@@ -50,6 +48,19 @@ const Home = async ({ searchParams }: HomeProps) => {
       </Container>
     </ClientOnly>
   )
+}
+
+export async function getServerSideProps(context: { query: IListingsParams; }) {
+  const searchParams: IListingsParams = context.query; // You can get the search params from the context
+  const listings = await getListings(searchParams);
+  const currentUser = await getCurrentUser();
+
+  return {
+    props: {
+      listings,
+      currentUser,
+    },
+  };
 }
 
 export default Home;

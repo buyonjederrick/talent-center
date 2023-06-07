@@ -39,6 +39,7 @@ const Home = ({ listings, currentUser }: HomeProps) => {
             gap-8
           "
         >
+          <div></div>
           {listings.map((listing: any) => (
             <ListingCard
               currentUser={currentUser}

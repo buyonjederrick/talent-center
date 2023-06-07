@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from 'react';
 import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";

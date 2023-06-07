@@ -2,26 +2,231 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  height: 100%;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.leaflet-bottom,
+.leaflet-control,
+.leaflet-pane,
+.leaflet-top {
+  z-index: 0 !important;
+}
+
+.rdrMonth {
+  width: 100% !important;
+}
+
+.rdrCalendarWrapper {
+  font-size: 16px !important;
+  width: 100% !important;
+}
+
+.my-container * {
+  all: revert;
+}
+
+.embla {
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
+  --slide-height: 19rem;
+}
+
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  flex-direction: row;
+  height: auto;
+}
+
+.embla__slide {
+  overflow: hidden;
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  position: relative;
+}
+
+.embla-thumbs {
+  --thumbs-slide-spacing: 0.8rem;
+  --thumbs-slide-height: 5rem;
+  margin-top: var(--thumbs-slide-spacing);
+}
+.embla-thumbs__viewport {
+  overflow: hidden;
+}
+
+.embla-thumbs__container {
+  display: flex;
+  flex-direction: row;
+  margin-left: calc(var(--thumbs-slide-spacing) * -1);
+}
+.embla-thumbs__slide {
+  flex: 0 0 28%;
+  min-width: 0;
+  padding-left: var(--thumbs-slide-spacing);
+  position: relative;
+}
+
+@media (min-width: 576px) {
+  .embla-thumbs__slide {
+    flex: 0 0 18%;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
+.embla-thumbs__slide__button {
+  -webkit-appearance: none;
+  background-color: transparent;
+  touch-action: manipulation;
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  opacity: 0.2;
+  transition: opacity 0.2s;
+}
+
+.embla-thumbs__slide--selected .embla-thumbs__slide__button {
+  opacity: 1;
+}
+
+.embla-thumbs__slide__img {
+  display: block;
+  height: var(--thumbs-slide-height);
+  width: 100%;
+  object-fit: cover;
+}
+
+.embla-thumbs__slide__number {
+  width: 3rem;
+  height: 3rem;
+  z-index: 1;
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  border-radius: 50%;
+  background-color: #f3f3f3;
+  line-height: 3rem;
+  font-weight: 900;
+  text-align: center;
+  pointer-events: none;
+}
+
+.embla-thumbs__slide__number > span {
+  color: var(--brand-primary);
+  background-image: linear-gradient(
+    45deg,
+    var(--brand-primary),
+    var(--brand-secondary)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.4rem;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.embla__dot,
+.embla__button {
+  -webkit-appearance: none;
+  background-color: transparent;
+  touch-action: manipulation;
+  display: inline-flex;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.embla__dots {
+  z-index: 1;
+  bottom: 1.2rem;
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.embla__dot {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
+}
+.embla__dot:after {
+  background: var(--background-site);
+  border-radius: 0.2rem;
+  width: 100%;
+  height: 0.3rem;
+  content: '';
+}
+.embla__dot--selected:after {
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    45deg,
+    var(--brand-primary),
+    var(--brand-secondary)
+  );
+}
+.embla__button {
+  z-index: 1;
+  color: var(--background-site);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 4rem;
+  height: 4rem;
+}
+.embla__button--prev {
+  left: 1.6rem;
+}
+.embla__button--next {
+  right: 1.6rem;
+}
+.embla__button:disabled {
+  opacity: 0.3;
+}
+.embla__button__svg {
+  width: 65%;
+  height: 65%;
+}
+
+
+@layer components {
+  .blur:after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75));
+      backdrop-filter: blur(5px);
+  }
+  .blur:active:after {
+      content: none;
+  }
 }
